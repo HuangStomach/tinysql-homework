@@ -65,7 +65,7 @@ build: parser
 # Install the check tools.
 check-setup:tools/bin/revive tools/bin/goword tools/bin/gometalinter tools/bin/gosec
 
-check: parser fmt errcheck lint tidy testSuite check-static vet
+check: parser errcheck lint tidy testSuite check-static vet
 
 # These need to be fixed before they can be ran regularly
 check-fail: goword check-slow
