@@ -26,8 +26,8 @@ PACKAGES  := $$($(PACKAGE_LIST))
 PACKAGE_DIRECTORIES := $(PACKAGE_LIST) | sed 's|github.com/pingcap/$(PROJECT)/||'
 FILES     := $$(find $$($(PACKAGE_DIRECTORIES)) -name "*.go")
 
-FAILPOINT_ENABLE  := $$(find $$PWD/ -type d | grep -vE "(\.git|tools)" | xargs tools/bin/failpoint-ctl enable)
-FAILPOINT_DISABLE := $$(find $$PWD/ -type d | grep -vE "(\.git|tools)" | xargs tools/bin/failpoint-ctl disable)
+# FAILPOINT_ENABLE  := $$(find $$PWD/ -type d | grep -vE "(\.git|tools)" | xargs tools/bin/failpoint-ctl enable)
+# FAILPOINT_DISABLE := $$(find $$PWD/ -type d | grep -vE "(\.git|tools)" | xargs tools/bin/failpoint-ctl disable)
 
 LDFLAGS += -X "github.com/pingcap/parser/mysql.TiDBReleaseVersion=$(shell git describe --tags --dirty --always)"
 
@@ -209,13 +209,13 @@ endif
 checklist:
 	cat checklist.md
 
-failpoint-enable: tools/bin/failpoint-ctl
-# Converting gofail failpoints...
-	@$(FAILPOINT_ENABLE)
+# failpoint-enable: tools/bin/failpoint-ctl
+# # Converting gofail failpoints...
+# 	@$(FAILPOINT_ENABLE)
 
-failpoint-disable: tools/bin/failpoint-ctl
-# Restoring gofail failpoints...
-	@$(FAILPOINT_DISABLE)
+# failpoint-disable: tools/bin/failpoint-ctl
+# # Restoring gofail failpoints...
+# 	@$(FAILPOINT_DISABLE)
 
 checkdep:
 	$(GO) list -f '{{ join .Imports "\n" }}' github.com/pingcap/tidb/store/tikv | grep ^github.com/pingcap/parser$$ || exit 0; exit 1
@@ -244,8 +244,8 @@ tools/bin/errcheck: tools/check/go.mod
 	cd tools/check; \
 	$(GO) build -o ../bin/errcheck github.com/kisielk/errcheck
 
-tools/bin/failpoint-ctl: go.mod
-	$(GO) build -o $@ github.com/pingcap/failpoint/failpoint-ctl
+# tools/bin/failpoint-ctl: go.mod
+# 	$(GO) build -o $@ github.com/pingcap/failpoint/failpoint-ctl
 
 tools/bin/misspell:tools/check/go.mod
 	$(GO) get -u github.com/client9/misspell/cmd/misspell
