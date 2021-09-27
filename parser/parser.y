@@ -809,6 +809,7 @@ import (
 	IndexPartSpecificationList	"List of index column name or expression"
 	IndexPartSpecificationListOpt   "Optional list of index column name or expression"
 	InsertValues			"Rest part of INSERT/REPLACE INTO statement"
+	OnCondition 			"on condition"
 	JoinTable 			"join table"
 	JoinType			"join type"
 	LocationLabelList		"location label name list"
@@ -3809,6 +3810,14 @@ JoinTable:
 	{
 		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $3.(ast.ResultSetNode), Tp: ast.CrossJoin}
 	}
+|	TableRef "LEFT" "JOIN" TableRef OnCondition
+	{
+		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $4.(ast.ResultSetNode), Tp: ast.LeftJoin, On: $5.(*ast.OnCondition)}
+	}
+|	TableRef "RIGHT" "JOIN" TableRef OnCondition
+	{
+		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $4.(ast.ResultSetNode), Tp: ast.RightJoin, On: $5.(*ast.OnCondition)}
+	}
 	/* Your code here. */
 
 JoinType:
@@ -3819,6 +3828,12 @@ JoinType:
 |	"RIGHT"
 	{
 		$$ = ast.RightJoin
+	}
+
+OnCondition:
+	"ON" Expression
+	{
+		$$ = &ast.OnCondition{Expr: $2.(ast.ExprNode)}
 	}
 
 OuterOpt:
